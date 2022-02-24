@@ -1,0 +1,98 @@
+name: automated-testing
+
+on: [pull_request]
+
+env:
+  PHP_VERSION: 8.0
+  PACKAGE_NAME: attribute-container
+
+jobs:
+    create-artifact:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                php-version: ${{ env.PHP_VERSION }}
+                ini-values: error_reporting=E_ALL
+
+            - name: Install Composer dependencies
+              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+            - name: Create artifact
+              run: zip --symlinks -rq $PACKAGE_NAME.zip .
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v2
+              with:
+                name: ${{ env.PACKAGE_NAME }}
+                path: ${{ env.PACKAGE_NAME }}.zip
+
+    coding-standard:
+        runs-on: ubuntu-latest
+        needs: create-artifact
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v2
+              with:
+                name: ${{ env.PACKAGE_NAME }}
+
+            - name: Setup artifact
+              run: unzip ${{ env.PACKAGE_NAME }}.zip
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                php-version: ${{ env.PHP_VERSION }}
+                ini-values: error_reporting=E_ALL
+
+            - name: Run code style check
+              run: composer check.style -- --no-progress-bar
+
+    static-analysis:
+        runs-on: ubuntu-latest
+        needs: create-artifact
+        steps:
+          - name: Download artifact
+            uses: actions/download-artifact@v2
+            with:
+              name: ${{ env.PACKAGE_NAME }}
+
+          - name: Setup artifact
+            run: unzip ${{ env.PACKAGE_NAME }}.zip
+
+          - name: Setup PHP
+            uses: shivammathur/setup-php@v2
+            with:
+              php-version: ${{ env.PHP_VERSION }}
+              ini-values: error_reporting=E_ALL
+
+          - name: Run static analysis
+            run: composer test.static -- --no-progress
+
+    unit-tests:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          php-version: ['8.0', '8.1']
+      needs: create-artifact
+      steps:
+        - name: Download artifact
+          uses: actions/download-artifact@v2
+          with:
+            name: ${{ env.PACKAGE_NAME }}
+
+        - name: Setup artifact
+          run: unzip ${{ env.PACKAGE_NAME }}.zip
+
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php-version }}
+            ini-values: error_reporting=E_ALL
+
+        - name: Run unit tests
+          run: composer test.unit

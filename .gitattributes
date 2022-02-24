@@ -1,0 +1,12 @@
+# Path-based git attributes
+# https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
+
+# Ignore all test and documentation with "export-ignore".
+/.gitignore         export-ignore
+/ecs.php            export-ignore
+/phpstan.neon       export-ignore
+/phpunit.xml        export-ignore
+/.github            export-ignore
+/tests              export-ignore
+/docker             export-ignore
+/docker-compose.yml export-ignore
