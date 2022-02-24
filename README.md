@@ -67,6 +67,40 @@ interface Foo
 }
 ```
 
+### Custom binding attribute
+
+If you do not want to rely on the provided BindTo attribute you can create your own attribute class that implements BindingAttribute interface
+
+```php
+#[Attribute]
+class MyBindingAttribute implements Kbondurant\AttributeContainer\BindingAttribute
+{
+    /**
+     * @param class-string $class
+     */
+    public function __construct(
+        private string $class,
+    ) {
+    }
+
+    public function getClass(): string
+    {
+        return $this->class;
+    }
+
+    public function isShared(): bool
+    {
+        return false;
+    }
+}
+
+#[MyBindingAttribute(Bar::class)]
+interface Foo
+{
+    //
+}
+```
+
 ## Testing
 
 Testing includes PHPUnit and PHPStan (Level 9).

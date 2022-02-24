@@ -2,26 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Kbondurant\AttributeContainer;
+namespace Tests\Fixtures;
 
 use Attribute;
+use Kbondurant\AttributeContainer\BindingAttribute;
 
 #[Attribute]
-class BindTo implements BindingAttribute
+class MyBindTo implements BindingAttribute
 {
     /**
      * @param class-string $class
-     * @param bool $shared
      */
     public function __construct(
         private string $class,
-        private bool $shared = false,
     ) {
     }
 
-    /**
-     * @return class-string
-     */
     public function getClass(): string
     {
         return $this->class;
@@ -29,6 +25,6 @@ class BindTo implements BindingAttribute
 
     public function isShared(): bool
     {
-        return $this->shared;
+        return false;
     }
 }

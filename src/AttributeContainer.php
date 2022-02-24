@@ -17,55 +17,55 @@ class AttributeContainer implements ContainerAwareInterface, ContainerInterface
 {
     use ContainerAwareTrait;
 
-    /** @var BindTo[] */
+    /** @var BindingAttribute[] */
     private array $cache = [];
 
     public function get(string $id)
     {
-        $bindTo = $this->getBindFromCache($id) ?? $this->getBoundClass($id);
+        $bindingAttribute = $this->getAttributeFromCache($id) ?? $this->getBindingAttribute($id);
 
         assert($this->container instanceof Container);
 
-        $this->container->add($id, $bindTo->getClass())
-            ->setShared($bindTo->isShared());
+        $this->container->add($id, $bindingAttribute->getClass())
+            ->setShared($bindingAttribute->isShared());
 
-        return $this->container->get($bindTo->getClass());
+        return $this->container->get($bindingAttribute->getClass());
     }
 
     public function has(string $id): bool
     {
         try {
-            $bindTo = $this->getBoundClass($id);
+            $bindingAttribute = $this->getBindingAttribute($id);
         } catch (ContainerExceptionInterface) {
             return false;
         }
 
-        $this->cache[$id] = $bindTo;
+        $this->cache[$id] = $bindingAttribute;
 
         return true;
     }
 
-    private function getBoundClass(string $id): BindTo
+    private function getBindingAttribute(string $id): BindingAttribute
     {
         if (!interface_exists($id)) {
             throw new NotFoundException(sprintf('%s does not exists or is not an interface', $id));
         }
 
-        $attributes = (new ReflectionClass($id))->getAttributes(BindTo::class);
+        $attributes = (new ReflectionClass($id))->getAttributes(BindingAttribute::class, 2);
         $bindCount = count($attributes);
 
-        $bindTo = match (true) {
+        $bindingAttribute = match (true) {
             $bindCount > 1 => throw new ContainerException(sprintf('%s has more than one binding declared', $id)),
             $bindCount < 1 => throw new NotFoundException(sprintf('%s has no binding attribute', $id)),
             default => $attributes[0]->newInstance(),
         };
 
-        assert($bindTo instanceof BindTo);
+        assert($bindingAttribute instanceof BindingAttribute);
 
-        return $bindTo;
+        return $bindingAttribute;
     }
 
-    private function getBindFromCache(string $id): ?BindTo
+    private function getAttributeFromCache(string $id): ?BindingAttribute
     {
         if (!array_key_exists($id, $this->cache)) {
             return null;
