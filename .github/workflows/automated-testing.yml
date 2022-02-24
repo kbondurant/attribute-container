@@ -1,6 +1,6 @@
 name: automated-testing
 
-on: [pull_request]
+on: [push, pull_request]
 
 env:
   PHP_VERSION: 8.0
