@@ -16,6 +16,7 @@ use ReflectionClass;
 use Tests\Fixtures\Bar;
 use Tests\Fixtures\DoubleDefinition;
 use Tests\Fixtures\Foo;
+use Tests\Fixtures\MyFoo;
 use Tests\Fixtures\NoBinding;
 use Tests\Fixtures\NotAnInterface;
 use Tests\Fixtures\Singleton;
@@ -44,6 +45,11 @@ class AttributeContainerTest extends TestCase
     public function test_it_returns_true_if_the_interface_has_a_valid_attribute_binding(): void
     {
         $this->assertTrue($this->container->has(Foo::class));
+    }
+
+    public function test_it_can_use_any_attribute_class_that_implements_binding_attribute_interface(): void
+    {
+        $this->assertTrue($this->container->has(MyFoo::class));
     }
 
     public function test_it_returns_false_if_no_binding_is_defined(): void
