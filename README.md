@@ -1,4 +1,4 @@
-# League Attribute Container
+# Attribute Container
 
 An attribute based container for [league/container](https://container.thephpleague.com/).
 
