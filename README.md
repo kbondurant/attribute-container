@@ -19,6 +19,20 @@ The following versions of PHP are supported by this version.
 
 ## Usage
 
+This container allows you to bind an interface to its implementation using [PHP Attributes](https://www.php.net/manual/en/language.attributes.php)
+
+### Add AttributeContainer as a delegate container to your league/container
+```php
+<?php 
+
+declare(strict_types=1);
+
+$container = new League\Container\Container();
+$delegate  = new Kbondurant\AttributeContainer\AttributeContainer();
+
+$container->delegate($delegate);
+```
+
 ### Regular binding
 ```php
 <?php
