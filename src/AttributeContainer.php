@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kbondurant\AttributeContainer;
 
-use League\Container\Container;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
+use League\Container\DefinitionContainerInterface;
 use League\Container\Exception\ContainerException;
 use League\Container\Exception\NotFoundException;
 use Psr\Container\ContainerExceptionInterface;
@@ -23,7 +23,7 @@ class AttributeContainer implements ContainerAwareInterface, ContainerInterface
     public function get(string $id): mixed
     {
         $bindingAttribute = $this->getAttributeFromCache($id) ?? $this->getBindingAttribute($id);
-        assert($this->container instanceof Container);
+        assert($this->container instanceof DefinitionContainerInterface);
 
         $instance = $this->container->get($bindingAttribute->getClass());
 
