@@ -60,6 +60,7 @@ class AttributeContainerTest extends TestCase
     public function test_it_throws_an_exception_if_no_binding_is_defined(): void
     {
         $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Tests\Fixtures\NoBinding has no binding attribute');
 
         $this->container->get(NoBinding::class);
     }
@@ -72,6 +73,7 @@ class AttributeContainerTest extends TestCase
     public function test_it_throws_an_exception_if_more_than_one_binding_is_defined(): void
     {
         $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Tests\Fixtures\DoubleDefinition has more than one binding declared');
 
         $this->container->get(DoubleDefinition::class);
     }
@@ -84,6 +86,7 @@ class AttributeContainerTest extends TestCase
     public function test_it_throws_an_exception_if_id_is_not_an_interface(): void
     {
         $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('Tests\Fixtures\NotAnInterface does not exists or is not an interface');
 
         $this->container->get(NotAnInterface::class);
     }
