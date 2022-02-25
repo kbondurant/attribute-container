@@ -96,8 +96,13 @@ class AttributeContainerTest extends TestCase
             ->with(false);
 
         $this->mockContainer->expects($this->once())
+            ->method('get')
+            ->with(Bar::class)
+            ->willReturn('resolved');
+
+        $this->mockContainer->expects($this->once())
             ->method('add')
-            ->with(Foo::class, Bar::class)
+            ->with(Foo::class, 'resolved')
             ->willReturn($definition);
 
         $this->mockContainer->expects($this->once())
@@ -115,8 +120,13 @@ class AttributeContainerTest extends TestCase
             ->with(true);
 
         $this->mockContainer->expects($this->once())
+            ->method('get')
+            ->with(Bar::class)
+            ->willReturn('resolved');
+
+        $this->mockContainer->expects($this->once())
             ->method('add')
-            ->with(Singleton::class, Bar::class)
+            ->with(Singleton::class, 'resolved')
             ->willReturn($definition);
 
         $this->container->get(Singleton::class);

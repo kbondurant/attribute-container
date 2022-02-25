@@ -20,16 +20,17 @@ class AttributeContainer implements ContainerAwareInterface, ContainerInterface
     /** @var BindingAttribute[] */
     private array $cache = [];
 
-    public function get(string $id)
+    public function get(string $id): mixed
     {
         $bindingAttribute = $this->getAttributeFromCache($id) ?? $this->getBindingAttribute($id);
-
         assert($this->container instanceof Container);
 
-        $this->container->add($id, $bindingAttribute->getClass())
+        $instance = $this->container->get($bindingAttribute->getClass());
+
+        $this->container->add($id, $instance)
             ->setShared($bindingAttribute->isShared());
 
-        return $this->container->get($bindingAttribute->getClass());
+        return $instance;
     }
 
     public function has(string $id): bool
